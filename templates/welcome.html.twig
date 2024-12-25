@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Institutions et Utilisateurs</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+{% block body %}
+    <!-- Logo -->
+    <img src="logo.png" alt="Logo" class="mx-auto my-4 w-32">
+
+    <!-- Liste des liens de navigation -->
+    <div class="space-y-6 mb-12">
+        <h2 class="text-3xl font-semibold text-gray-800 text-center">Navigation</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for link in [
+                {'url': '/institution', 'text': "Liste des institutions"},
+                {'url': '/institutionsessions', 'text': 'Liste des institutions et sessions'},
+                {'url': '/sessionmodule', 'text': 'Liste des sessions et modules'}
+            ] %}
+            <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <a href="{{ link.url }}"
+                    class="block text-center text-blue-600 font-semibold text-lg hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 p-2">
+                    {{ link.text }}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Affichage des messages flash (succès ou erreurs) -->
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success text-green-600 bg-green-100 p-4 mb-4 rounded-lg">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger text-red-600 bg-red-100 p-4 mb-4 rounded-lg">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <!-- Formulaire d'ajout d'un utilisateur -->
+    <h2 class="text-xl font-semibold text-blue-700 mb-4">Ajouter un utilisateur</h2>
+    {{ form_start(form_utilisateur) }}
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+            {{ form_row(form_utilisateur.nom) }}
+            {{ form_row(form_utilisateur.courriel) }}
+            {{ form_row(form_utilisateur.prenom) }}
+            {{ form_row(form_utilisateur.motdepasse) }}
+        <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700">
+            Ajouter l'utilisateur
+        </button>
+    </div>
+    {{ form_end(form_utilisateur) }}
+
+    <!-- Liste des utilisateurs -->
+    <h2 class="text-xl font-semibold text-blue-700 mb-4">Liste des utilisateurs</h2>
+    <div class="overflow-x-auto bg-white shadow-lg rounded-lg p-6">
+        <table class="min-w-full table-auto">
+            <thead>
+                <tr class="bg-blue-600 text-white">
+                    <th class="px-6 py-3 text-left">Nom</th>
+                    <th class="px-6 py-3 text-left">Courriel</th>
+                    <th class="px-6 py-3 text-left">Prenom</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for utilisateur in utilisateurs_liste %}
+                    <tr class="border-t hover:bg-gray-100">
+                        <td class="px-6 py-3">{{ utilisateur.nom }}</td>
+                        <td class="px-6 py-3">{{ utilisateur.courriel }}</td>
+                        <td class="px-6 py-3">{{ utilisateur.prenom }}</td>
+                        <td class="px-6 py-3">{{ utilisateur.motdepasse }}</td>
+                        <td class="px-6 py-3">
+                            <a href="{{ path('institution_index_ajouter', { 'delete_id': utilisateur.id }) }}"
+                               class="text-red-600 hover:text-red-800 font-semibold"
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                               Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center py-4">Aucun utilisateur trouvé.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Formulaire d'ajout d'une institution -->
+    <h2 class="text-xl font-semibold text-blue-700 mb-4">Ajouter une institution</h2>
+    {{ form_start(form_institution) }}
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+        <div class="mb-4">
+            {{ form_row(form_institution.nom) }}
+            {{ form_row(form_institution.adresse) }}
+            {{ form_row(form_institution.telephone) }}
+            {{ form_row(form_institution.courriel) }}
+        </div>
+        <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700">
+            Ajouter l'institution
+        </button>
+    </div>
+    {{ form_end(form_institution) }}
+
+    <!-- Liste des institutions -->
+    <h2 class="text-xl font-semibold text-blue-700 mb-4">Liste des institutions</h2>
+    <div class="overflow-x-auto bg-white shadow-lg rounded-lg p-6">
+        <table class="min-w-full table-auto">
+            <thead>
+                <tr class="bg-blue-600 text-white">
+                    <th class="px-6 py-3 text-left">Nom</th>
+                    <th class="px-6 py-3 text-left">Adresse</th>
+                    <th class="px-6 py-3 text-left">Courriel</th>
+                    <th class="px-6 py-3 text-left">Telephone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for institution in institutions %}
+                    <tr class="border-t hover:bg-gray-100">
+                        <td class="px-6 py-3">{{ institution.nom }}</td>
+                        <td class="px-6 py-3">{{ institution.adresse }}</td>
+                        <td class="px-6 py-3">{{ institution.courriel }}</td>
+                        <td class="px-6 py-3">{{ institution.telephone }}</td>
+                        <td class="px-6 py-3">
+                            <!-- Optionally, add delete button for institution -->
+                            <a href="{{ path('institution_index_ajouter', { 'delete_Institution_id': institution.id }) }}"
+                               class="text-red-600 hover:text-red-800 font-semibold"
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette institution ?');">
+                               Supprimer
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="text-center py-4">Aucune institution trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

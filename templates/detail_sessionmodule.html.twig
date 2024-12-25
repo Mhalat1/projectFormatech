@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails des Modules et Sessions</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 p-6 font-sans">
+
+    {% block body %}
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Liste des liens de navigation -->
+        <div class="space-y-6 mb-12">
+            <h2 class="text-3xl font-semibold text-gray-800 text-center">Navigation</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for link in [
+                    {'url': '/institution', 'text': "Liste des institutions"},
+                    {'url': '/institutionsessions', 'text': 'Liste des institutions et sessions'},
+                    {'url': '/sessionmodule', 'text': 'Liste des sessions et modules'}
+                ] %}
+                <div class="p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+                    <a href="{{ link.url }}"
+                        class="block text-center text-blue-600 font-semibold text-lg hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 p-2">
+                        {{ link.text }}
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Titre principal -->
+        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-12 tracking-tight">Détails des Modules et Sessions</h1>
+
+        <!-- Affichage des modules et sessions -->
+        <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for result in results %}
+            <!-- Carte de Module et Session -->
+            <div class="bg-white shadow-md rounded-lg p-6 transition-all hover:scale-105 hover:shadow-lg">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800">Session: {{ result.sessionNom }}</h3>
+                        <p class="text-gray-600"><strong>Type:</strong> {{ result.sessionType }}</p>
+                        <p class="text-gray-600"><strong>Date de début:</strong> {{ result.sessionDateDebut|date('d-m-Y') }}</p>
+                        <p class="text-gray-600"><strong>Date de fin:</strong> {{ result.sessionDateFin|date('d-m-Y') }}</p>
+                        <p class="text-gray-600"><strong>Description:</strong> {{ result.sessionDescription }}</p>
+                    </div>
+                    
+                    <a href="/sessionmodule/{{ result.moduleId }}"class="block p-6 bg-blue-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+
+                        <h2 class="text-2xl font-semibold text-gray-800">{{ result.moduleNom }}</h2>
+                        <p class="text-gray-600"><strong>Description:</strong> {{ result.moduleDescription }}</p>
+                    </a>
+
+
+                </div>
+            </div>
+            {% else %}
+            <!-- Message lorsqu'aucune donnée n'est trouvée -->
+            <p class="text-red-500 text-center mt-6">Aucune donnée trouvée pour les modules et sessions.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+    {% endblock %}
+
+</body>
+
+</html>

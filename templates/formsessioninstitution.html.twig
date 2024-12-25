@@ -1,0 +1,27 @@
+{# sessionmodule/index.html.twig #}
+<h1>Session Modules</h1>
+
+{# Display any flash messages (e.g., success or error messages) #}
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">{{ message }}</div>
+{% endfor %}
+
+<form method="post" action="{{ path('app_Session_Module') }}">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary">Add Session Module</button>
+    {{ form_end(form) }}
+</form>
+
+<ul>
+    {% for result in results %}
+        <li>
+            {{ result.moduleNom }} - {{ result.sessionNom }}
+            <a href="{{ path('app_sessionmodule_show', {id: result.id}) }}">View</a>
+            <a href="{{ path('app_sessionmodule_delete', {id: result.id}) }}" 
+               onclick="return confirm('Are you sure you want to delete this SessionModule?');">
+                Delete
+            </a>
+        </li>
+    {% endfor %}
+</ul>

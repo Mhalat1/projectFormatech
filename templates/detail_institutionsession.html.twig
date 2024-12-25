@@ -1,0 +1,83 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Détails des Institutions et Sessions</title>
+</head>
+
+<body class="bg-gray-100 p-6 font-sans">
+
+    {% block body %}
+    <div class="max-w-7xl mx-auto">
+
+        <!-- Liste des liens de navigation -->
+        <div class="space-y-6 mb-12">
+            <h2 class="text-3xl font-semibold text-gray-800 text-center">Navigation</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for link in [
+                    {'url': '/institution', 'text': "Liste des institutions"},
+                    {'url': '/institutionsessions', 'text': 'Liste des institutions et sessions'},
+                    {'url': '/sessionmodule', 'text': 'Liste des modules et sessions'}
+                ] %}
+                <div class="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    <a href="{{ link.url }}"
+                        class="block text-center text-blue-600 font-semibold text-lg hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 p-2">
+                        {{ link.text }}
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Titre principal -->
+        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-12">Détails des Sessions</h1>
+
+        {% if sessions is not empty %}
+        <!-- Grille responsive pour les sessions -->
+        <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for session in sessions %}
+            <!-- Carte de session -->            <div class="bg-white shadow-xl rounded-3xl p-6 transition-all hover:scale-105 hover:shadow-2xl transform">
+                <div class="space-y-4 mb-6">
+                    <h2 class="text-xl font-semibold text-blue-600">{{ session.institution.nom }}</h2>
+                    <p><strong class="font-semibold text-lg text-gray-800">Adresse :</strong> {{ session.institution.adresse
+                        }}</p>
+                    <p><strong class="font-semibold text-lg text-gray-800">Téléphone :</strong> {{ session.institution.telephone
+                        }}</p>
+                    <p><strong class="font-semibold text-lg text-gray-800">Courriel :</strong> {{ session.institution.courriel
+                        }}</p>
+                </div>
+
+                <!-- Lien vers la session détaillée -->
+                <a href="/institutionsessions/{{ session.session.id }}"
+                    class="block p-6 bg-blue-50 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                    <p><strong class="font-semibold text-lg text-gray-800">ID de la Session :</strong> {{ session.session.id }}
+                    </p>
+                    <p><strong class="font-semibold text-lg text-gray-800">Nom de la Session :</strong> {{ session.session.nom
+                        }}</p>
+                    <p><strong class="font-semibold text-lg text-gray-800">Type :</strong> {{ session.session.type }}</p>
+                    <p><strong class="font-semibold text-lg text-gray-800">Date de Début :</strong> {{ session.session.date_debut|date('d/m/Y H:i') }}</p>
+                    <p><strong class="font-semibold text-lg text-gray-800">Date de Fin :</strong> {{ session.session.date_fin|date('d/m/Y H:i') }}</p>
+                    <p><strong class="font-semibold text-lg text-gray-800">Description :</strong> {{ session.session.description }}
+                    </p>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-red-500 text-center text-lg mt-6">Aucune donnée trouvée pour les sessions.</p>
+        {% endif %}
+    </div>
+    {% endblock %}
+
+</body>
+
+</html>
